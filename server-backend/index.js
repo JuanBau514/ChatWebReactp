@@ -14,9 +14,21 @@ io.on("connection", (socket) => {
         console.log (datos)
         socket.broadcast.emit('mensaje', { // enviamos (emitimos) el evento "mensaje" a todos los clientes conectados menos al que lo envio
             datos,
-            form: socket.id.slice(4)
+            form: socket.id,
         }) 
     } )
+
+    // Manejador de eventos "registro"
+    socket.on ("registro", (nombreUsuario) => {
+        console.log (nombreUsuario)
+
+        //emitimos el evento "registro" a todos los clientes conectados
+        io.emit ("registro", {
+            nombreUsuario,
+            NUsuario: nombreUsuario
+        })
+    })
+
 
 })
 

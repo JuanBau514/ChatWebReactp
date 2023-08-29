@@ -17,23 +17,18 @@ function app() {
     const MensajeNuevo = {
       datos: mensaje,
       form: "Yo",
-      nombreUsuario: nombreUsuario
+      nombreUsuario: nombreUsuario,
+      idCliente: miId
     } 
-    setMensajes([...mensajes, MensajeNuevo ]); // guardamos el mensaje en el estado mensajes
     server.emit("mensaje", mensaje); // enviamos el evento "mensaje" al servidor con el mensaje que se envio
   } 
 
   const registro = (nombreUsuario) => { // esta funcion se ejecuta cuando se envia el formulario
     setNombreUsuario(nombreUsuario); // guardamos el nombre de usuario en el estado nombreUsuario
-    const abreviatura = nombreUsuario; // Usamos las primeras dos letras como abreviatura
-    setMiId(abreviatura); 
+    const nUsuario = nombreUsuario; // Usamos las primeras dos letras como abreviatura
+    setMiId(nUsuario); 
     
-    server.emit("registro", abreviatura); // enviamos el evento "registro" al servidor con la abreviatura
-
-    setMensajes([
-      ...mensajes,
-      { form: "Sistema", datos: `Bienvenid@ ${nombreUsuario}` },
-    ]); // guardamos el mensaje de bienvenida en el estado mensajes
+    server.emit("registro", nUsuario); // enviamos el evento "registro" al servidor con la abreviatura
 
   }
 

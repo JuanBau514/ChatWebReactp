@@ -1,0 +1,140 @@
+/* Encabezado */
+.Titulo {
+  font-weight: bold;
+  font-size: 2rem;
+  margin-top: 5rem;
+  margin-left: 10rem;
+}
+
+/* Entrada de texto */
+.inputEnvio {
+  width: 40rem;
+  height: 3rem;
+  position: relative;
+  bottom: 25rem;
+  border-radius: 1rem;
+  border: 1px solid #0894b8;
+  font-size: 1.5rem;
+  padding-left: 1rem;
+  margin-top: 40rem;
+  margin-left: 60rem;
+}
+
+/* Botón de envío */
+.btn-envio {
+  position: relative;
+  bottom:65rem;
+  width: 10rem;
+  color: #eff1ef;
+  background-color: #0894b8;
+  margin-top: 37rem;
+  margin-left: 100rem;
+  cursor: pointer;
+  transition: color 0.3s, background-color 0.3s;
+}
+
+.btn-envio:hover {
+  color: white;
+}
+
+/* Contenedor de mensajes */
+.divMensajes {
+  margin-bottom: 10rem;
+  margin-left: 1rem;
+}
+
+.lista-Mensajes {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  bottom: 115rem;
+  left: 56rem;
+  width: 50rem;
+  height: 39rem;
+  border-radius: 1rem;
+  overflow-y: scroll;
+  padding: 1rem;
+  margin: 1rem;
+}
+
+/* Barra de desplazamiento personalizada */
+.lista-Mensajes::-webkit-scrollbar {
+  width: 0.5rem;
+}
+
+.lista-Mensajes::-webkit-scrollbar-thumb {
+  background-color: #a8b9bd;
+  border-radius: 1rem;
+}
+
+.lista-Mensajes::-webkit-scrollbar-track {
+  background-color: white;
+}
+
+.lista-Mensajes li {
+  margin: 1rem;
+  padding: 1rem;
+  border-radius: 1rem;
+  border: 1px solid #0894b8;
+  color: white;
+}
+
+/* Estilo para mensajes del usuario */
+.mensaje-usuario {
+  background-color: #0894b8;
+  align-self: flex-end;
+}
+
+/* Estilo para mensajes de otros usuarios */
+.mensaje-otro-usuario {
+  background-color: #011a20;
+  align-self: flex-start;
+}
+
+/* Contenedor de usuarios */
+.usuarios {
+  position: relative;
+  top: 10rem;
+  left: 10rem;
+  border-radius: 1rem;
+  overflow-y: scroll;
+  flex-direction: column;
+  padding: 1rem;
+  margin: 1rem;
+}
+
+.tituloUsuarios {
+  font-weight: bold;
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+/* Lista de usuarios */
+.listaUsuarios {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr;
+  grid-gap: 1rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* Botones de estado de usuario */
+.btn-estado-usuario {
+  width: 20%;
+  padding: 1rem;
+  background-color: #e0e0e0;
+  border: none;
+  cursor: pointer;
+  margin: 1rem;
+  text-align: left;
+  font-weight: bold;
+  font-size: 1rem;
+  color: #000; /* Color del texto */
+  transition: background-color 0.3s;
+}
+
+.btn-estado-usuario:hover {
+  background-color: #518fd6; /* Color de fondo al pasar el cursor */
+}

@@ -1,12 +1,29 @@
-import express  from "express";
+import express from "express";
 import http from "http";
-import {Server as SocketServer} from "socket.io"; // importamos el servidor de socket.io
+import { Server as SocketServer } from "socket.io";
+import { fileURLToPath } from 'url'; // Importar la función fileURLToPath
+import { resolve, dirname } from "path";
+import { PORT } from "./config.js";
 
-const app = express(); // creamos la aplicacion
+const __filename = fileURLToPath(import.meta.url); // Convertir import.meta.url a __filename
+const __dirname = dirname(__filename); // Obtener el directorio actual
+
+const app = express();
 const server = http.createServer(app);
-const io = new SocketServer(server); // creamos el servidor 
+const io = new SocketServer(server);
 
-const usuariosConectados = {}; // Objeto para almacenar los nombres de usuario asociados con los IDs de socket
+const usuariosConectados = {};
+
+// Middleware para servir archivos estáticos desde la carpeta "dist"
+app.use(express.static(resolve(__dirname, "../Frontend/dist")));
+
+// Ruta manejadora para la ruta raíz "/"
+app.get("/", (req, res) => {
+  // En este ejemplo, suponemos que tienes un archivo HTML principal en la carpeta "dist"
+  res.sendFile(resolve(__dirname, "../Frontend/dist/index.html"));
+});
+
+
 
 io.on("connection", (socket) => {
     console.log("Un cliente se ha conectado", socket.id);
@@ -98,5 +115,5 @@ io.on("connection", (socket) => {
 });
 
 
-server.listen(6900) // mi servidor esta escuchando en el puerto 6900
-console.log ("El servidor esta corriendo en el puerto", 6900)
+server.listen(PORT) // mi servidor esta escuchando en el puerto 6900
+console.log ("El servidor esta corriendo en el puerto", PORT)

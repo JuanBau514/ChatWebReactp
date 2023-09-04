@@ -5,7 +5,10 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "dev": "nodemon server-backend/index.js  --ignore Frontend"
+    "dev": "nodemon server-backend/index.js  --ignore Frontend",
+    "buid": "cd Frontend && npm run build",
+    "start": "node server-backend/index.js"
+    
   },
   "keywords": [],
   "author": "",

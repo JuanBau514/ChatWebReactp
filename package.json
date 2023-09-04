@@ -6,9 +6,10 @@
   "type": "module",
   "scripts": {
     "dev": "nodemon server-backend/index.js  --ignore Frontend",
-    "buid": "cd Frontend && npm run build",
+    "build": "npm run build --prefix Frontend",
     "start": "node server-backend/index.js"
     
+
   },
   "keywords": [],
   "author": "",

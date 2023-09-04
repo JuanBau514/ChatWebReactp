@@ -4,6 +4,7 @@ import { Server as SocketServer } from "socket.io";
 import { fileURLToPath } from 'url'; // Importar la función fileURLToPath
 import { resolve, dirname } from "path";
 import { PORT } from "./config.js";
+import morgan from "morgan";
 
 const __filename = fileURLToPath(import.meta.url); // Convertir import.meta.url a __filename
 const __dirname = dirname(__filename); // Obtener el directorio actual
@@ -14,6 +15,7 @@ const io = new SocketServer(server);
 
 const usuariosConectados = {};
 
+app.use(morgan("dev")); // Usar morgan para registrar las solicitudes HTTP en la consola
 // Middleware para servir archivos estáticos desde la carpeta "dist"
 app.use(express.static(resolve(__dirname, "../Frontend/dist")));
 

@@ -1,28 +1,89 @@
-import React, {useState} from "react";
+import React, { useState, useEffect } from "react";
+import io from "socket.io-client";
+import CryptoJS from "crypto-js";
 
-function ChatPrivado({ usuarioDestino, enviarMensajePrivado }) {
-  const [mensajePrivado, setMensajePrivado] = useState("");
+const serverPrivado = io("/");
 
-  const enviarMensaje = (e) => {
-    e.preventDefault();
-    if (mensajePrivado) {
-      enviarMensajePrivado(mensajePrivado);
-      setMensajePrivado("");
-    }
+function ChatPrivado({ usuarioDestino, miId, volverAListaUsuarios }) {
+  const [mensaje, setMensaje] = useState(""); // Estado para el mensaje que se va a enviar
+  const [mensajesPrivados, setMensajesPrivados] = useState([]); // Estado para almacenar mensajes privados
+
+  const enviarMensajePrivado = () => {
+
+    const mensajeEncriptado = CryptoJS.AES.encrypt(mensaje, "palabraClave").toString();
+    const mensajePrivado = {
+      datos: mensajeEncriptado,
+      from: miId,
+      nombreUsuario: miId,
+      destinatario: usuarioDestino,
+    };
+
+    serverPrivado.emit("chatPrivado", mensajePrivado);
+    console.log(mensajePrivado);
+    setMensaje("");
   };
 
+  // Enviando y recibiendo mensajes privados
+  useEffect(() => {
+  const atendedorDeMensajesPrivados = (mensajePrivado) => {
+    console.log("Mensaje privado recibido:", mensajePrivado);
+
+    const mensajeDesencriptado = CryptoJS.AES.decrypt(
+      mensajePrivado.datos,
+      "palabraClave"
+    ).toString(CryptoJS.enc.Utf8);
+
+    // Actualizar el estado de mensajesPrivados
+    setMensajesPrivados((prevMensajes) => [
+      ...prevMensajes,
+      {
+        from: mensajePrivado.from,
+        nombreUsuario: mensajePrivado.nombreUsuario,
+        datos: mensajeDesencriptado,
+      },
+    ]);
+  };
+
+  serverPrivado.on("chatPrivado", atendedorDeMensajesPrivados);
+
+  return () => {
+    serverPrivado.off("chatPrivado", atendedorDeMensajesPrivados);
+  };
+}, []);
+
+  
+
   return (
-    <div className="chat-privado">
-      <h3>Chat privado con {usuarioDestino}</h3>
-      <form onSubmit={enviarMensaje}>
-        <input
-          type="text"
-          value={mensajePrivado}
-          onChange={(e) => setMensajePrivado(e.target.value)}
-          placeholder="Escribe tu mensaje privado..."
-        />
-        <button type="submit">Enviar</button>
-      </form>
+    <div className="chatPrivado">
+      <div className="contenedorMensajes">
+        <div className="mensajes">
+          <ul>
+            {mensajesPrivados.map((mensaje, index) => (
+                <li className="mensaje" key={index}>
+                  <div className="textoMensaje">
+                    <p className="texto">{mensaje.datos}</p>
+                  </div>
+                </li>
+              ))}
+          </ul>
+        </div>
+      </div>
+      <div className="contenedorFormulario">
+        <form onSubmit={(e) => { e.preventDefault(); enviarMensajePrivado(); }}>
+          <p>
+            <strong>Enviar mensaje a {usuarioDestino}</strong>
+          </p>
+          <input
+            type="text"
+            className="inputMensaje"
+            value={mensaje}
+            onChange={(e) => setMensaje(e.target.value)}
+          />
+          <button className="botonEnviar" onClick={enviarMensajePrivado}>
+            Enviar
+          </button>
+        </form>
+      </div>
     </div>
   );
 }

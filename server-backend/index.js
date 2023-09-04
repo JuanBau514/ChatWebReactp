@@ -62,20 +62,37 @@ io.on("connection", (socket) => {
     });
 
     // Manejador de eventos "chatPrivado"
-    socket.on("chatPrivado", (mensajePrivado) => {
-        const {datos, form, nombreUsuario, destinatario} = mensajePrivado;
-        
-        // Emitir el mensaje privado al destinatario
-        if (usuariosConectados[destinatario]) {
-            socket.to(destinatario).emit("chatPrivado", {
-                datos,
-                form,
-                nombreUsuario,
-                destinatario
-            });
-        }
+      socket.on("chatPrivado", (mensajePrivado) => {
+  console.log("Mensaje privado recibido:", mensajePrivado);
+
+  // Obtener destinatario desde mensajePrivado
+  const destinatario = mensajePrivado.destinatario;
+
+  // Verificar si el destinatario está en usuariosConectados
+  if (usuariosConectados[destinatario]) {
+    socket.to(usuariosConectados[destinatario]).emit("chatPrivado", {
+      datos: mensajePrivado.datos,
+      form: mensajePrivado.form,
+      nombreUsuario: mensajePrivado.nombreUsuario,
+      destinatario: mensajePrivado.destinatario, // Agregar destinatario
     });
-    
+
+    // Emitir un mensaje de notificación al remitente
+    socket.emit("mensajeNotificacion", {
+      mensaje: `Mensaje privado enviado a ${destinatario}`,
+      form: "Sistema",
+    });
+
+    // Emitir el mensaje de vuelta al remitente
+    socket.emit("chatPrivado", {
+      datos: mensajePrivado.datos,
+      form: mensajePrivado.form,
+      nombreUsuario: mensajePrivado.nombreUsuario,
+      destinatario: destinatario, // Usar la variable destinatario
+    });
+  }
+});
+
   
     io.emit("usuariosConectados", Object.values(usuariosConectados));
 });

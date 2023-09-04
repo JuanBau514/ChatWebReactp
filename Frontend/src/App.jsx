@@ -12,8 +12,6 @@ function App() {
   const [nombreUsuario, setNombreUsuario] = useState("");
   const [miId, setMiId] = useState("");
   const [usuariosConectados, setUsuariosConectados] = useState([]);
-  const [usuarioChatPrivado, setUsuarioChatPrivado] = useState(null);
-  const [mensajePrivado, setMensajePrivado] = useState(""); // Agregado estado para el mensaje privado
 
   const envioForm = (e) => {
     e.preventDefault();
@@ -22,36 +20,18 @@ function App() {
       nombreUsuario: nombreUsuario,
       datos: mensaje,
     };
-    server.emit("mensaje", mensaje);
+    server.emit("mensaje", MensajeNuevo); //  emitir el objeto MensajeNuevo
+    setMensaje(""); // Limpia el campo de mensaje después de enviarlo
   };
 
   const registro = (nombreUsuario) => {
     setNombreUsuario(nombreUsuario);
-    const nUsuario = nombreUsuario;
-    setMiId(nUsuario);
-    server.emit("registro", nUsuario);
+    setMiId(nombreUsuario); // Usar el nombre de usuario como miId
+    server.emit("registro", nombreUsuario);
   };
 
   const seleccionarUsuario = (usuarioId) => {
     setMiId(usuarioId);
-  };
-
-  const seleccionarUsuarioChatPrivado = (usuarioId) => {
-    setUsuarioChatPrivado(usuarioId);
-  };
-
-  const enviarMensajePrivado = (e) => {
-    e.preventDefault();
-    if (usuarioChatPrivado && mensajePrivado) {
-      const mensajePrivadoData = {
-        datos: mensajePrivado,
-        form: miId,
-        nombreUsuario: nombreUsuario,
-        destinatario: usuarioChatPrivado,
-      };
-      server.emit("chatPrivado", mensajePrivadoData);
-      setMensajePrivado(""); // Limpiar el campo de texto después de enviar
-    }
   };
 
   useEffect(() => {
@@ -81,41 +61,23 @@ function App() {
     };
   }, [mensajes]);
 
-
   return (
-  <div className="divChat">
-    <div>
-      {nombreUsuario === "" ? (
-        <Registro registro={registro} />
-      ) : (
-        <div>
-          <h1 className="Titulo">👋 Hola {nombreUsuario} ¿Qué tal tu día?</h1>
-
-          <div className="usuarios">
-            <h2 className="tituloUsuarios">Usuarios conectados 👨‍👩‍👧‍👦</h2>
-            <ul className="listaUsuarios">
-              <ListaUsuarios
-                usuariosConectados={usuariosConectados}
-                seleccionarUsuario={seleccionarUsuario}
-                seleccionarUsuarioChatPrivado={seleccionarUsuarioChatPrivado}
-                
-              />
-            </ul>
-          </div>
-
-          {usuarioChatPrivado ? (
-            <div>
-              <h3>Chat privado con {usuarioChatPrivado}</h3>
-              <form onSubmit={enviarMensajePrivado}>
-                <input
-                  type="text"
-                  value={mensajePrivado}
-                  onChange={(e) => setMensajePrivado(e.target.value)}
+    <div className="divChat">
+      <div>
+        {nombreUsuario === "" ? (
+          <Registro registro={registro} />
+        ) : (
+          <div>
+            <h1 className="Titulo">👋 Hola {nombreUsuario} ¿Qué tal tu día?</h1>
+            <div className="usuarios">
+              <h2 className="tituloUsuarios">Usuarios conectados 👨‍👩‍👧‍👦</h2>
+              <ul className="listaUsuarios">
+                <ListaUsuarios
+                  usuariosConectados={usuariosConectados}
+                  seleccionarUsuario={seleccionarUsuario}
                 />
-                <button type="submit">Enviar</button>
-              </form>
+              </ul>
             </div>
-          ) : (
             <div>
               <form onSubmit={envioForm}>
                 <input
@@ -125,34 +87,33 @@ function App() {
                   value={mensaje}
                   onChange={(e) => setMensaje(e.target.value)}
                 />
+                <button className="btn-envio" type="submit">
+                  Enviar
+                </button>
               </form>
-              <button className="btn-envio" type="submit">
-                Enviar
-              </button>
             </div>
-          )}
+            <div className="divMensajes">
+              <ul className="lista-Mensajes">
+                {mensajes.map((mensaje, index) => (
+                  <li
+                    key={index}
+                    className={
+                      mensaje.form === miId
+                        ? "mensaje-usuario"
+                        : "mensaje-otro-usuario"
+                    }
+                  >
+                    {`${mensaje.nombreUsuario} (${mensaje.form}): ${mensaje.datos.datos}`}
+                   
+                  </li>
 
-          <div className="divMensajes">
-            <ul className="lista-Mensajes">
-              {mensajes.map((mensaje, index) => (
-                <li
-                  key={index}
-                  className={
-                    mensaje.form === miId
-                      ? "mensaje-usuario"
-                      : "mensaje-otro-usuario"
-                  }
-                >
-                  {mensaje.nombreUsuario} ({mensaje.form}): {mensaje.datos}
-                </li>
-              ))}
-            </ul>
+                ))}
+              </ul>
+            </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
-  </div>
-);
+  );
 }
-
 export default App;

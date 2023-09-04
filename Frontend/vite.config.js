@@ -8,7 +8,7 @@ export default defineConfig({
     port: 5173,
     proxy: {
       '/socket.io': {
-        target: 'https://78c5-2800-e2-5980-eeb-00-3.ngrok-free.app',
+        target: 'http://78c5-2800-e2-5980-eeb-00-3.ngrok-free.app',
         ws: true
       }
     }

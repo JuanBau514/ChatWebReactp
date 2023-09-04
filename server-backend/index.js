@@ -12,7 +12,8 @@ io.on("connection", (socket) => {
     console.log("Un cliente se ha conectado", socket.id);
 
     // Manejador de eventos "registro"
-    socket.on("registro", (nombreUsuario) => {
+  socket.on("registro", (nombreUsuario) => {
+    try {
         console.log(nombreUsuario);
 
         // Almacena el nombre de usuario en el objeto usuariosConectados
@@ -33,7 +34,10 @@ io.on("connection", (socket) => {
 
         // Emitir la lista actualizada de usuarios conectados a todos los clientes
         io.emit("usuariosConectados", Object.values(usuariosConectados));
-    });
+    } catch (error) {
+        console.error("Error en el evento 'registro':", error);
+    }
+  });
 
     // Manejador de usuarios desconectados
     socket.on("disconnect", () => {
@@ -44,7 +48,9 @@ io.on("connection", (socket) => {
         io.emit("usuariosConectados", Object.values(usuariosConectados));
     });
 
-    socket.on("mensaje", (datos) => {
+    // Manejador de eventos "mensaje"
+    socket.on("mensaje", (mensaje) => {
+        try {
         console.log(datos);
 
         // Obtener el nombre de usuario asociado con el ID del socket
@@ -59,7 +65,11 @@ io.on("connection", (socket) => {
                 nombreUsuario
             });
         }
-    });
+    } catch (error) {
+        console.error("Error en el evento 'mensaje':", error);
+    }
+});
+
 
     // Manejador de eventos "chatPrivado"
       socket.on("chatPrivado", (mensajePrivado) => {

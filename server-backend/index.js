@@ -1,12 +1,20 @@
 import express  from "express";
 import http from "http";
 import {Server as SocketServer} from "socket.io"; // importamos el servidor de socket.io
+import {resolve} from "path";
+import { PORT } from "./config.js";
+import morgan from "morgan";
 
 const app = express(); // creamos la aplicacion
 const server = http.createServer(app);
 const io = new SocketServer(server); // creamos el servidor 
 
 const usuariosConectados = {}; // Objeto para almacenar los nombres de usuario asociados con los IDs de socket
+
+app.use(morgan("dev"));
+console.log(resolve('Frontend/dist'));
+app.use(express.static(resolve('Frontend/dist'))); // configuramos el servidor para que sirva archivos estáticos desde la carpeta "dist"
+
 
 io.on("connection", (socket) => {
     console.log("Un cliente se ha conectado", socket.id);
@@ -98,5 +106,5 @@ io.on("connection", (socket) => {
 });
 
 
-server.listen(6900) // mi servidor esta escuchando en el puerto 6900
-console.log ("El servidor esta corriendo en el puerto", 6900)
+server.listen(PORT) // mi servidor esta escuchando en el puerto 6900
+console.log ("El servidor esta corriendo en el puerto", PORT)

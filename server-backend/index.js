@@ -1,15 +1,31 @@
-import express  from "express";
+import express from "express";
 import http from "http";
-import {Server as SocketServer} from "socket.io"; // importamos el servidor de socket.io
-import {resolve} from "path";
+import { Server as SocketServer } from "socket.io";
+import { fileURLToPath } from 'url'; // Importar la función fileURLToPath
+import { resolve, dirname } from "path";
 import { PORT } from "./config.js";
 import morgan from "morgan";
 
-const app = express(); // creamos la aplicacion
-const server = http.createServer(app);
-const io = new SocketServer(server); // creamos el servidor 
+const __filename = fileURLToPath(import.meta.url); // Convertir import.meta.url a __filename
+const __dirname = dirname(__filename); // Obtener el directorio actual
 
-const usuariosConectados = {}; // Objeto para almacenar los nombres de usuario asociados con los IDs de socket
+const app = express();
+const server = http.createServer(app);
+const io = new SocketServer(server);
+
+const usuariosConectados = {};
+
+app.use(morgan("dev")); // Usar morgan para registrar las solicitudes HTTP en la consola
+// Middleware para servir archivos estáticos desde la carpeta "dist"
+app.use(express.static(resolve(__dirname, "../Frontend/dist")));
+
+// Ruta manejadora para la ruta raíz "/"
+app.get("/", (req, res) => {
+  // En este ejemplo, suponemos que tienes un archivo HTML principal en la carpeta "dist"
+  res.sendFile(resolve(__dirname, "../Frontend/dist/index.html"));
+});
+
+
 
 app.use(morgan("dev"));
 console.log(resolve('Frontend/dist'));
